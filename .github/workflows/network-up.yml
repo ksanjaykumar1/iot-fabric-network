@@ -1,0 +1,29 @@
+name: Network-up
+on: push
+env:
+ NODE_VER: '12'
+
+jobs:
+  network-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install nodejs ${{env.NODE_VER}}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{env.NODE_VER}}
+      - name: clone repo using checkout action
+        uses: actions/checkout@v1
+      - name: List files
+        run: ls -a
+      - name: Download binaries and docker images
+        run: |
+          curl -sSL https://bit.ly/2ysbOFE | bash -s -s
+          tree
+      - name: Create network using Couchdb and Certificate Authority
+        run: |
+          cd network
+          ./network.sh up 
+      - name: Create Channel called mychannel
+        run: |
+          cd network
+          ./network.sh createChannel
